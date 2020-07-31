@@ -1,18 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using LogCenterNameSpace;
 
 namespace Theme_18_HomeWork
 {
@@ -22,7 +12,7 @@ namespace Theme_18_HomeWork
     public partial class w_newAccaunt : Window
     {
         //  public int OwnerId { get; set; }
-        public DataTable AccType
+        public List<AccauntType> AccType
         {
             get
             {
@@ -30,11 +20,11 @@ namespace Theme_18_HomeWork
             }
             set
             {
-                cbbx_acctype.DataContext = value;
+                cbbx_acctype.ItemsSource = value;
 
             }
         }
-        public DataTable RateType
+        public List<ratesType> RateType
         {
             get
             {
@@ -42,7 +32,7 @@ namespace Theme_18_HomeWork
             }
             set
             {
-                cbbx_ratetype.DataContext = value;
+                cbbx_ratetype.ItemsSource = value;
 
             }
         }
@@ -60,7 +50,7 @@ namespace Theme_18_HomeWork
         //}
 
 
-        public DataRow NewACCrow { get; set; }
+        public Accaunt NewACC { get; set; }
 
         public w_newAccaunt()
         {
@@ -92,12 +82,12 @@ namespace Theme_18_HomeWork
                 else
                 {
                     //NewACCrow["OwnerId"] = (int)((DataRowView)cbbx_Owner.SelectedItem)["id"];
-                    NewACCrow["TypeId"] = (int)((DataRowView)cbbx_acctype.SelectedItem)["id"];
-                    NewACCrow["OpenDate"] = DateTime.Now;
-                    NewACCrow["EndDate"] = (DateTime)dp_enddate.SelectedDate;
-                    NewACCrow["Rates"] = 6;
-                    NewACCrow["RatesTypeid"] = (int)((DataRowView)cbbx_ratetype.SelectedItem)["id"];
-                    NewACCrow["Capitalisation"] = (bool)cbx_Capitalisation.IsChecked;
+                    NewACC.TypeId = ((AccauntType)cbbx_acctype.SelectedItem).id;
+                    NewACC.OpenDate = DateTime.Now;
+                    NewACC.EndDate = (DateTime)dp_enddate.SelectedDate;
+                    NewACC.Rates = 6;
+                    NewACC.RatesTypeid = ((ratesType)cbbx_ratetype.SelectedItem).id;
+                    NewACC.Capitalisation = (bool)cbx_Capitalisation.IsChecked;
                     this.DialogResult = !false;
                     this.Close();
                 }

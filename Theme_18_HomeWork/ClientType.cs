@@ -10,7 +10,7 @@
 namespace Theme_18_HomeWork
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     
     public partial class ClientType
     {

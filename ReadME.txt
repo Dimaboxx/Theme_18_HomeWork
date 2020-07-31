@@ -1,4 +1,4 @@
-1.	Открыть решение Theme_17_Homework.sln с помощью Visual Studio
+1.	Открыть решение Theme_18_Homework.sln с помощью Visual Studio
 2.	открыть Server Explorer ( меню View - Server Explorer )
 3.	Создать Базу данных MSSQLLocalDemo
 3.0		Выполнить ПРаый клик мыши по пункту Data Connection 

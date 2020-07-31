@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Theme_18_HomeWork
-{ 
+{
     static class Support
     {
         //public static Support()
@@ -15,10 +10,10 @@ namespace Theme_18_HomeWork
         //}
 
 
-        public static float GetUserValue(string stringunput)
+        public static decimal GetUserValue(string stringunput)
         {
-            float value = 0;
-            if (!float.TryParse(stringunput, out value))
+            decimal value = 0;
+            if (!decimal.TryParse(stringunput, out value))
             {
                 MessageBox.Show($"Введенное число некоректно: {stringunput}\n " +
                 $"в системе установлен разделитель длобной и целой части" +
@@ -35,4 +30,23 @@ namespace Theme_18_HomeWork
                 return value;
         }
     }
+
+
+    public struct selecteditems
+    {
+
+        public int ClientType { get; set; }
+        public int ClientsforView { get; set; }
+        public int OrganisationforView { get; set; }
+        public int AccauntForView { get; set; }
+    }
+
+    //public struct selecteditems
+    //{
+
+    //    public ClientType ClientType { get; set; }
+    //    public ClientsforView ClientsforView { get; set; }
+    //    public OrganisationforView OrganisationforView { get; set; }
+    //    public AccauntForView AccauntForView { get; set; }
+    //}
 }

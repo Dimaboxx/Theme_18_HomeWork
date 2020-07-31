@@ -1,31 +1,18 @@
-﻿using System;
+﻿using LogCenterNameSpace;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using LogCenterNameSpace;
-using System.Data;
-using System.Collections.Specialized;
-using Theme_18_HomeWork;
-using System.Data.Entity;
-using System.ComponentModel;
 
 namespace Theme_18_HomeWork
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IView
     {
         public static string DateTimeformat;
         public static string Timeformat;
@@ -33,9 +20,21 @@ namespace Theme_18_HomeWork
         public static NewClient wnd_newClient;
         public static NewOrgs wnd_newOrgs;
         public static w_newAccaunt wnd_w_newAccaunt;
-        public MSSqlRep mSSqlRep;
+        LogCenter logCenter;
+        DBEntity edb;
+        selecteditems curselecteditems;
+        Presenter presenter;
 
-        static MainWindow() {
+        public List<AccauntForView> accauntForViews { set => dtg_Accaunts.ItemsSource = value; }
+        public List<ClientsforView> clientsforViews { set => dtg_Clients.ItemsSource = value; }
+        public List<OrganisationforView> organisationforViews { set => dtg_Clients.ItemsSource = value; }
+        public int ClientTypeSelectionIndex { get => cbbx_ClientType.SelectedIndex; set => cbbx_ClientType.SelectedIndex = value; }
+        public int ClienSelectionIndex { get => dtg_Clients.SelectedIndex; set => dtg_Clients.SelectedIndex = value; }
+        public int OrganisationsSelectionIndex { get => dtg_Clients.SelectedIndex; set => dtg_Clients.SelectedIndex = value; }
+        public int AccauntSelectionIndex { get => dtg_Accaunts.SelectedIndex; set => dtg_Accaunts.SelectedIndex = value; }
+
+        static MainWindow()
+        {
             Timeformat = System.Threading.Thread.CurrentThread.CurrentUICulture.DateTimeFormat.LongTimePattern;
             Dateformat = System.Threading.Thread.CurrentThread.CurrentUICulture.DateTimeFormat.ShortDatePattern;
             DateTimeformat = $"{Dateformat} {Timeformat}";
@@ -44,87 +43,75 @@ namespace Theme_18_HomeWork
 
         public MainWindow()
         {
-           LogCenter logCenter = new LogCenter();
-            DBEntity edb = new DBEntity();
-            this.Language = System.Windows.Markup.XmlLanguage.GetLanguage(System.Threading.Thread.CurrentThread.CurrentUICulture.IetfLanguageTag);
-          //  mSSqlRep = new MSSqlRep();
-          //  mSSqlRep.newLogMessage += logCenter.AddMessage;
-           // mSSqlRep.newLogMessage += scrollLogView;
-         //   mSSqlRep.dt_Accaunts.DefaultView.RowFilter = ($"OwnerId= '-1'");
+
             InitializeComponent();
-      //      lst_log.ItemsSource = logCenter.records;
-            
-            logCenter.AddMessage("Репозитарий создан");
-            //            cbx_ClientType.DataContext = mSSqlRep.DtClientsTypes.DefaultView;
-            //            dtg_Clients.DataContext = mSSqlRep.dt_clients.DefaultView;
+            init_0();
 
-            var r = edb.enticontext.Accaunts.
-            Join(
-            edb.enticontext.AccauntType,
-            a => a.TypeId,
-            at => at.id,
-            (a, at) => new
-            {
-                id = a.id,
-                TypeDesc = at.Description,
-                Owner = a.OwnerId,
-                Balans = a.Balans,
-                a.Capitalisation,
-                a.OpenDate,
-                a.Rates,
-                a.EndDate,
-                a.RatesTypeid
+            presenter = new Presenter(this);
 
-            }).Join(
-                    edb.enticontext.ratesType,
-                    a => a.RatesTypeid,
-                    rt => rt.id,
-                    (a, rt) => new
-                    {
-                        id = a.id,
-                        a.TypeDesc,
-                        a.Owner,
-                        a.Balans,
-                        a.Capitalisation,
-                        a.OpenDate,
-                        a.Rates,
-                        a.EndDate,
-                        RatesType = rt.Description
-                    }).Join(
-                            edb.enticontext.Organisations.Select(o => new
-                            {
-                                id = o.id,
-                                Owner = o.OrganisationName
-                            }).Union(
-                            edb.enticontext.Clients.Select(c => new
-                            {
-                                id = c.id,
-                                Owner = c.FullName
-                            })),
-                            a => a.Owner,
-                            cs => cs.id,
-                            (a, cs) => new
-                            {
-                                id = a.id,
-                                a.TypeDesc,
-                                cs.Owner,
-
-                                a.Balans,
-                                a.Capitalisation,
-                                a.OpenDate,
-                                a.Rates,
-                                a.EndDate,
-                                a.RatesType
-                            });
-
-            dtg_Accaunts.ItemsSource = r.ToList();
-
-           // cbbx_ClientType.DataContext = mSSqlRep.DtClientsTypes.DefaultView;
-           // cbbx_ClientType.SelectedIndex = 0;
-           //repository.Generate(15);
         }
 
-        private void scrollLogView (string s)
+
+
+        void init_0 ()
+        {
+            logCenter  = new LogCenter();
+            logCenter.AddMessage($"Репозитарий создан ");
+            edb = new DBEntity();
+            this.Language = System.Windows.Markup.XmlLanguage.GetLanguage(System.Threading.Thread.CurrentThread.CurrentUICulture.IetfLanguageTag);
+            edb.newLogMessage += scrollLogView;
+            edb.newLogMessage += logCenter.AddMessage;
+            lst_log.ItemsSource = logCenter.records;
+            cbbx_ClientType.ItemsSource = edb.enticontext.ClientTypes.Local;
+            cbbx_ClientType.SelectedIndex = 0;
+            load_items();
+        }
+
+
+
+        void load_items()
+        {
+            if (((ClientType)cbbx_ClientType.SelectedItem).id == 0)
+                dtg_Clients.ItemsSource = edb.ClientsforViews;
+            else
+                dtg_Clients.ItemsSource = edb.OrganisationforViews;
+                
+            dtg_Accaunts.ItemsSource = edb.AccauntForViews;
+        }
+
+        void saveselection(bool SaveClientType,bool SaveClient,  bool SaveAccaunt)
+        {
+            if(SaveClientType)
+                curselecteditems.ClientType = cbbx_ClientType.SelectedIndex;
+            if (SaveClient)
+            {
+                if(((ClientType)cbbx_ClientType.SelectedItem).id == 0)
+                    curselecteditems.ClientsforView = dtg_Clients.SelectedIndex;
+                else
+                    curselecteditems.OrganisationforView = dtg_Clients.SelectedIndex;
+            }
+            if(SaveAccaunt)
+                curselecteditems.AccauntForView = dtg_Accaunts.SelectedIndex;
+
+        }
+        void restoreselection(bool restoreClientType, bool restoreClient, bool restoreAccaunt)
+        {
+            if (restoreClientType)
+                cbbx_ClientType.SelectedIndex = curselecteditems.ClientType ;
+
+            if (restoreClient)
+            {
+                if (((ClientType)cbbx_ClientType.SelectedItem).id == 0)
+                    dtg_Clients.SelectedIndex = curselecteditems.ClientsforView; 
+                else
+                    dtg_Clients.SelectedIndex = curselecteditems.OrganisationforView;
+            }
+            if (restoreAccaunt)
+                dtg_Accaunts.SelectedIndex = curselecteditems.AccauntForView ;
+
+        }
+
+        private void scrollLogView(string s)
         {
             if (lst_log.Items.Count > 0)
             {
@@ -135,47 +122,36 @@ namespace Theme_18_HomeWork
         private void Btn_addClient_Click(object sender, RoutedEventArgs e)
         {
 
-            if (((int)((DataRowView)cbbx_ClientType.SelectedItem)["id"]) == 0)
+            if (((ClientType)(cbbx_ClientType.SelectedItem)).id == 0)
             {
                 if (wnd_newClient == null)
                 {
                     wnd_newClient = new NewClient();
-
-                    //wnd_newClient.accTypes = mSSqlRep.DtClientsTypes;
-                    wnd_newClient.newClientEvent += mSSqlRep.AddClient;
-
+                    wnd_newClient.newClientEvent += edb.AddClient;
                     wnd_newClient.Owner = this;
-
                 }
                 wnd_newClient.ShowDialog();
-                //if (wnd_newClient.DialogResult == true)
-                //{
-                //    mSSqlRep.ReFilldt();
-                //}
+                if (wnd_newClient.DialogResult == true)
+                {
+                    dtg_Clients.ItemsSource = edb.ClientsforViews;
+                }
                 wnd_newClient = null;
-
-
-
             }
             else
             {
                 if (wnd_newOrgs == null)
                 {
                     wnd_newOrgs = new NewOrgs();
-
-                    //wnd_newClient.accTypes = mSSqlRep.DtClientsTypes;
-                    wnd_newOrgs.newOrganisationEvent += mSSqlRep.AddOrganisation;
-
+                    wnd_newOrgs.newOrganisationEvent += edb.AddOrganisation;
                     wnd_newOrgs.Owner = this;
-
                 }
                 wnd_newOrgs.ShowDialog();
-                //if (wnd_newClient.DialogResult == true)
-                //{
-                //    mSSqlRep.ReFilldt();
-                //}
+                if (wnd_newOrgs.DialogResult == true)
+                {
+                    dtg_Clients.ItemsSource = edb.OrganisationforViews;
+                }
                 wnd_newOrgs = null;
-                
+
 
 
 
@@ -185,38 +161,35 @@ namespace Theme_18_HomeWork
 
 
 
-       }
+        }
 
         private void Btn_addacc_Click(object sender, RoutedEventArgs e)
         {
-            if(wnd_w_newAccaunt == null)
+            if (wnd_w_newAccaunt == null)
             {
-                wnd_w_newAccaunt  = new w_newAccaunt();
+                wnd_w_newAccaunt = new w_newAccaunt();
             }
-           // wnd_w_newAccaunt.OwnerId = (int)((DataRowView)(dtg_Clients.SelectedItem))["id"];
-            wnd_w_newAccaunt.AccType = mSSqlRep.DtAccauntTypes;
-            wnd_w_newAccaunt.RateType = mSSqlRep.DtRateTypes;
+            wnd_w_newAccaunt.AccType = edb.enticontext.AccauntTypes.ToList() ;
+            wnd_w_newAccaunt.RateType =  edb.enticontext.ratesTypes.ToList();
 
-            //if (((int)((DataRowView)cbbx_ClientType.SelectedItem)["id"]) == 0)
-            //{
-            //    wnd_w_newAccaunt.Clients =  mSSqlRep.dt_clients;
-            //}
-            //else
-            //    wnd_w_newAccaunt.Clients =  mSSqlRep.dt_Organisations;
-
-            DataRow row = mSSqlRep.dt_Accaunts.NewRow();
-            var id =dtg_Clients.SelectedIndex;
+            Accaunt accforadd = new Accaunt();
+            var id = dtg_Clients.SelectedIndex;
             if (dtg_Clients.SelectedItem != null)
             {
-            row["OwnerId"] = (int)((DataRowView)(dtg_Clients.SelectedItem))["id"];
-            wnd_w_newAccaunt.NewACCrow = row;
-
-            wnd_w_newAccaunt.ShowDialog();
-            if(wnd_w_newAccaunt.DialogResult == true)
-            {
-                mSSqlRep.AddAccaunt(row, (int)((DataRowView)cbbx_ClientType.SelectedItem)["id"]) ;
-                dtg_Clients.SelectedIndex = id;
-            }
+                if(((ClientType)cbbx_ClientType.SelectedItem).id == 0)
+                    accforadd.OwnerId = ((ClientsforView)(dtg_Clients.SelectedItem)).id;
+                else
+                    accforadd.OwnerId = ((OrganisationforView)(dtg_Clients.SelectedItem)).id;
+                wnd_w_newAccaunt.NewACC = accforadd;
+                wnd_w_newAccaunt.ShowDialog();
+                if (wnd_w_newAccaunt.DialogResult == true)
+                {
+                    saveselection(true, true, false);
+                    edb.AddAccaunt(accforadd);
+                    load_items();
+                    restoreselection(false, true, false);
+                    
+                }
             }
             wnd_w_newAccaunt = null;
         }
@@ -225,35 +198,37 @@ namespace Theme_18_HomeWork
 
         private void Btn_AddCache_Click(object sender, RoutedEventArgs e)
         {
-            mSSqlRep.AddMoney(((int)((DataRowView)dtg_Accaunts.SelectedItem)["id"]), Support.GetUserValue(txtbx_CashValue.Text));
+            saveselection(true, true, true);
+            decimal value = (Support.GetUserValue(txtbx_CashValue.Text));
+            edb.PushMoney(edb.enticontext.Accaunts.Find(((AccauntForView)dtg_Accaunts.SelectedItem).id), value);
+            load_items();
+            restoreselection(false, true, false);
         }
 
         private void Btn_PopCache_Click(object sender, RoutedEventArgs e)
         {
-            float currBalans = float.Parse(((DataRowView)dtg_Accaunts.SelectedItem)["Balans"].ToString());
-            float value = (Support.GetUserValue(txtbx_CashValue.Text));
-            if (currBalans  >= value)
-                mSSqlRep.PopMoney(((int)((DataRowView)dtg_Accaunts.SelectedItem)["id"]), value);
-            else
-                MessageBox.Show("Введенное число больше остатка на счете");
-
+            saveselection(true, true, true);
+            decimal value = (Support.GetUserValue(txtbx_CashValue.Text));
+            edb.PopMoney(edb.enticontext.Accaunts.Find(((AccauntForView)dtg_Accaunts.SelectedItem).id), value);
+            load_items();
+            restoreselection(false, true, false);
         }
 
-
-
-        // private void Btn_dellClient_Click(object sender, RoutedEventArgs e)
-        // {
-        //     if(dtg_Clients.SelectedItem!=null)
-        //          mSSqlRep.DeleteClient((DataRowView)(dtg_Clients.SelectedItem));
-        //}
 
         private void dtg_Clients_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (dtg_Clients.SelectedItem != null)
-                mSSqlRep.dt_Accaunts.DefaultView.RowFilter = ($"OwnerId= '{((DataRowView)(dtg_Clients.SelectedItem))["id"]}'");
+                if (((ClientType)(cbbx_ClientType.SelectedItem)).id == 0)
+                {
+                    dtg_Accaunts.ItemsSource = edb.AccauntForViews.Where(a => a.OwnerId == ((ClientsforView)(dtg_Clients.SelectedItem)).id);
+                }
+                else
+                {
+                    dtg_Accaunts.ItemsSource = edb.AccauntForViews.Where(a => a.OwnerId == ((OrganisationforView)(dtg_Clients.SelectedItem)).id);
+                }
+
             else
-                mSSqlRep.dt_Accaunts.DefaultView.RowFilter = ($"OwnerId= '-1'");
-            //mSSqlRep.dt_Accaunts.DefaultView.RowFilter = "";
+                dtg_Accaunts.ItemsSource = null; ;
         }
 
         //private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -263,28 +238,31 @@ namespace Theme_18_HomeWork
 
         private void Btn_CloseAcc_Click(object sender, RoutedEventArgs e)
         {
+            saveselection(true, true, false);
             if (dtg_Accaunts.SelectedItem != null)
-                mSSqlRep.DeleteAcc((DataRowView)(dtg_Accaunts.SelectedItem), (int)((DataRowView)cbbx_ClientType.SelectedItem)["id"]);
+                edb.DeleteAccaunt((AccauntForView)(dtg_Accaunts.SelectedItem));
+            load_items();
+            restoreselection(false, true, false);
         }
 
         private void cbbx_ClientType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (((int)((DataRowView)cbbx_ClientType.SelectedItem)["id"]) == 0)
+            if (((int)((ClientType)cbbx_ClientType.SelectedItem).id) == 0)
             {
-                dtg_Clients.DataContext = mSSqlRep.dt_clients.DefaultView;
+                dtg_Clients.ItemsSource = edb.ClientsforViews;
             }
             else
-                dtg_Clients.DataContext = mSSqlRep.dt_Organisations.DefaultView;
+                dtg_Clients.ItemsSource = edb.OrganisationforViews;
         }
 
         private void Btn_DellClient_Click(object sender, RoutedEventArgs e)
         {
 
-            if (dtg_Clients.SelectedItem != null) {
-                if (((int)((DataRowView)cbbx_ClientType.SelectedItem)["id"]) == 0)
-                mSSqlRep.DeleteClient((DataRowView)(dtg_Clients.SelectedItem));
-            else
-                mSSqlRep.DeleteOrgs((DataRowView)(dtg_Clients.SelectedItem));
+            if (dtg_Clients.SelectedItem != null)
+            {
+                //if (((ClientType)cbbx_ClientType.SelectedItem).id == 0)
+                    edb.DeleteClient((ClientsforView)(dtg_Clients.SelectedItem));
+                load_items();
             }
         }
     }

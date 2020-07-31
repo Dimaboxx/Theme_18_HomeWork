@@ -22,5 +22,16 @@ namespace Theme_18_HomeWork.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=MSSQLLocalDemo;Integrated Secu" +
+            "rity=True;MultipleActiveResultSets=True;Application Name=EntityFramework")]
+        public string MSSQLLocalDemoConnectionString {
+            get {
+                return ((string)(this["MSSQLLocalDemoConnectionString"]));
+            }
+        }
     }
 }

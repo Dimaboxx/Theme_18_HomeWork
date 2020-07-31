@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MSSQLLocalDemoModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Accaunts">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="OpenDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" />
+          <Property Name="TypeId" Type="int" Nullable="false" />
+          <Property Name="Rates" Type="real" Nullable="false" />
+          <Property Name="Balans" Type="money" Nullable="false" />
+          <Property Name="OwnerId" Type="int" Nullable="false" />
+          <Property Name="Capitalisation" Type="bit" Nullable="false" />
+          <Property Name="RatesTypeid" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AccauntType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Clients">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="MidleName" Type="nvarchar" MaxLength="25" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="25" Nullable="false" />
+          <Property Name="ClientTypeId" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar" MaxLength="77" StoreGeneratedPattern="Computed" />
+          <Property Name="GoodHistory" Type="bit" Nullable="false" />
+          <Property Name="Documents" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ClientType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Organisations">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="ClientTypeId" Type="int" Nullable="false" />
+          <Property Name="OrganisationName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="GoodHistory" Type="bit" Nullable="false" />
+          <Property Name="BankDetails" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Adress" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ratesType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_ratetype_ratetype_id">
+          <End Role="ratesType" Type="Self.ratesType" Multiplicity="1" />
+          <End Role="Accaunts" Type="Self.Accaunts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ratesType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accaunts">
+              <PropertyRef Name="RatesTypeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Type_AccauntType_id">
+          <End Role="AccauntType" Type="Self.AccauntType" Multiplicity="1" />
+          <End Role="Accaunts" Type="Self.Accaunts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccauntType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accaunts">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="NextAccauntId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="NextClientId" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="MSSQLLocalDemoModelStoreContainer">
+          <EntitySet Name="Accaunts" EntityType="Self.Accaunts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AccauntType" EntityType="Self.AccauntType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Clients" EntityType="Self.Clients" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientType" EntityType="Self.ClientType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Organisations" EntityType="Self.Organisations" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ratesType" EntityType="Self.ratesType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="fk_ratetype_ratetype_id" Association="Self.fk_ratetype_ratetype_id">
+            <End Role="ratesType" EntitySet="ratesType" />
+            <End Role="Accaunts" EntitySet="Accaunts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Type_AccauntType_id" Association="Self.FK_Type_AccauntType_id">
+            <End Role="AccauntType" EntitySet="AccauntType" />
+            <End Role="Accaunts" EntitySet="Accaunts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MSSQLLocalDemoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Accaunt">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="OpenDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Precision="0" />
+          <Property Name="TypeId" Type="Int32" Nullable="false" />
+          <Property Name="Rates" Type="Single" Nullable="false" />
+          <Property Name="Balans" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="OwnerId" Type="Int32" Nullable="false" />
+          <Property Name="Capitalisation" Type="Boolean" Nullable="false" />
+          <Property Name="RatesTypeid" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ratesType" Relationship="Self.fk_ratetype_ratetype_id" FromRole="Accaunts" ToRole="ratesType" />
+          <NavigationProperty Name="AccauntType" Relationship="Self.FK_Type_AccauntType_id" FromRole="Accaunts" ToRole="AccauntType" />
+        </EntityType>
+        <EntityType Name="AccauntType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Accaunts" Relationship="Self.FK_Type_AccauntType_id" FromRole="AccauntType" ToRole="Accaunts" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MidleName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="25" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClientTypeId" Type="Int32" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="77" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="GoodHistory" Type="Boolean" Nullable="false" />
+          <Property Name="Documents" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ClientType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Organisation">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="ClientTypeId" Type="Int32" Nullable="false" />
+          <Property Name="OrganisationName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GoodHistory" Type="Boolean" Nullable="false" />
+          <Property Name="BankDetails" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Adress" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ClientTypeid" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ratesType">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Accaunts" Relationship="Self.fk_ratetype_ratetype_id" FromRole="ratesType" ToRole="Accaunts" />
+        </EntityType>
+        <Association Name="fk_ratetype_ratetype_id">
+          <End Role="ratesType" Type="Self.ratesType" Multiplicity="1" />
+          <End Role="Accaunts" Type="Self.Accaunt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ratesType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accaunts">
+              <PropertyRef Name="RatesTypeid" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Type_AccauntType_id">
+          <End Role="AccauntType" Type="Self.AccauntType" Multiplicity="1" />
+          <End Role="Accaunts" Type="Self.Accaunt" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AccauntType">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Accaunts">
+              <PropertyRef Name="TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MSSQLLocalDemoEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Accaunts" EntityType="Self.Accaunt" />
+          <EntitySet Name="AccauntTypes" EntityType="Self.AccauntType" />
+          <EntitySet Name="Clients" EntityType="Self.Client" />
+          <EntitySet Name="ClientTypes" EntityType="Self.ClientType" />
+          <EntitySet Name="Organisations" EntityType="Self.Organisation" />
+          <EntitySet Name="ratesTypes" EntityType="Self.ratesType" />
+          <AssociationSet Name="fk_ratetype_ratetype_id" Association="Self.fk_ratetype_ratetype_id">
+            <End Role="ratesType" EntitySet="ratesTypes" />
+            <End Role="Accaunts" EntitySet="Accaunts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Type_AccauntType_id" Association="Self.FK_Type_AccauntType_id">
+            <End Role="AccauntType" EntitySet="AccauntTypes" />
+            <End Role="Accaunts" EntitySet="Accaunts" />
+          </AssociationSet>
+          <FunctionImport Name="NextAccauntId" />
+          <FunctionImport Name="NextClientId" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MSSQLLocalDemoModelStoreContainer" CdmEntityContainer="MSSQLLocalDemoEntities">
+          <EntitySetMapping Name="Accaunts">
+            <EntityTypeMapping TypeName="MSSQLLocalDemoModel.Accaunt">
+              <MappingFragment StoreEntitySet="Accaunts">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="OpenDate" ColumnName="OpenDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
+                <ScalarProperty Name="Rates" ColumnName="Rates" />
+                <ScalarProperty Name="Balans" ColumnName="Balans" />
+                <ScalarProperty Name="OwnerId" ColumnName="OwnerId" />
+                <ScalarProperty Name="Capitalisation" ColumnName="Capitalisation" />
+                <ScalarProperty Name="RatesTypeid" ColumnName="RatesTypeid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AccauntTypes">
+            <EntityTypeMapping TypeName="MSSQLLocalDemoModel.AccauntType">
+              <MappingFragment StoreEntitySet="AccauntType">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="MSSQLLocalDemoModel.Client">
+              <MappingFragment StoreEntitySet="Clients">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="MidleName" ColumnName="MidleName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="ClientTypeId" ColumnName="ClientTypeId" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="GoodHistory" ColumnName="GoodHistory" />
+                <ScalarProperty Name="Documents" ColumnName="Documents" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientTypes">
+            <EntityTypeMapping TypeName="MSSQLLocalDemoModel.ClientType">
+              <MappingFragment StoreEntitySet="ClientType">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Organisations">
+            <EntityTypeMapping TypeName="MSSQLLocalDemoModel.Organisation">
+              <MappingFragment StoreEntitySet="Organisations">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="ClientTypeId" ColumnName="ClientTypeId" />
+                <ScalarProperty Name="OrganisationName" ColumnName="OrganisationName" />
+                <ScalarProperty Name="GoodHistory" ColumnName="GoodHistory" />
+                <ScalarProperty Name="BankDetails" ColumnName="BankDetails" />
+                <ScalarProperty Name="Adress" ColumnName="Adress" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ratesTypes">
+            <EntityTypeMapping TypeName="MSSQLLocalDemoModel.ratesType">
+              <MappingFragment StoreEntitySet="ratesType">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="NextAccauntId" FunctionName="MSSQLLocalDemoModel.Store.NextAccauntId" />
+          <FunctionImportMapping FunctionImportName="NextClientId" FunctionName="MSSQLLocalDemoModel.Store.NextClientId" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

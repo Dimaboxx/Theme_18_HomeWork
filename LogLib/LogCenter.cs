@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogCenterNameSpace
 {
@@ -15,7 +11,7 @@ namespace LogCenterNameSpace
         {
             records = new ObservableCollection<LogRecord>();
             records.Add(new LogRecord("Журнал создан"));
-        } 
+        }
         /// <summary>
         ///add message to log
         /// </summary>
@@ -25,7 +21,7 @@ namespace LogCenterNameSpace
             records.Add(new LogRecord(MSg));
         }
     }
-    
+
     /// <summary>
     /// базовая запись лога
     /// </summary>
@@ -41,6 +37,6 @@ namespace LogCenterNameSpace
             this.Time = DateTime.Now;
             this.Message = Msg;
         }
-        
+
     }
 }

@@ -1,21 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using LogCenterNameSpace;
 
 namespace Theme_18_HomeWork
 {
@@ -51,7 +35,7 @@ namespace Theme_18_HomeWork
         {
             this.DialogResult = true;
             //SqlCommand c = new SqlCommand();
-         if (!String.IsNullOrWhiteSpace(tbx_FirstName.Text) && !String.IsNullOrWhiteSpace(tbx_LastName.Text)&& !String.IsNullOrWhiteSpace(tbx_Documents.Text))
+            if (!String.IsNullOrWhiteSpace(tbx_FirstName.Text) && !String.IsNullOrWhiteSpace(tbx_LastName.Text) && !String.IsNullOrWhiteSpace(tbx_Documents.Text))
             {
                 newClientEvent?.Invoke(
                     tbx_FirstName.Text,
@@ -59,7 +43,7 @@ namespace Theme_18_HomeWork
                     tbx_LastName.Text,
                     tbx_Documents.Text,
                     (bool)(cb_GoodHistory.IsChecked));
-                    this.Close();
+                this.Close();
             }
             else
             {

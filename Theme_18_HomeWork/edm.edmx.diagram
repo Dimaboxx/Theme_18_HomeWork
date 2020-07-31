@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="3e75acf52ef54c8eb65e3ed9c54dba09" Name="Diagram1" DisplayType="true">
+        <EntityTypeShape EntityType="MSSQLLocalDemoModel.Accaunt" Width="1.875" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSSQLLocalDemoModel.AccauntType" Width="1.75" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSSQLLocalDemoModel.Client" Width="2.25" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSSQLLocalDemoModel.ClientType" Width="1.75" PointX="10" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSSQLLocalDemoModel.Organisation" Width="1.75" PointX="10" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MSSQLLocalDemoModel.ratesType" Width="1.75" PointX="5.125" PointY="4.875" IsExpanded="true" />
+        <AssociationConnector Association="MSSQLLocalDemoModel.fk_ratetype_ratetype_id" ManuallyRouted="false" />
+        <AssociationConnector Association="MSSQLLocalDemoModel.FK_Type_AccauntType_id" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Markup;
 
 namespace DreamConvertions
 {
@@ -23,7 +18,7 @@ namespace DreamConvertions
             else
                 return passedValue == true ? "Visible" : "Hidden";
         }
-            public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             return null;
         }
@@ -34,7 +29,7 @@ namespace DreamConvertions
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null? "False":"True";
+            return value == null ? "False" : "True";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,21 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using LogCenterNameSpace;
 
 namespace Theme_18_HomeWork
 {
@@ -40,7 +24,7 @@ namespace Theme_18_HomeWork
 
 
 
-        public event Action<string, string, string , bool> newOrganisationEvent;
+        public event Action<string, string, string, bool> newOrganisationEvent;
         public NewOrgs()
         {
 
@@ -57,6 +41,7 @@ namespace Theme_18_HomeWork
 
         private void Button_AddOrganisationClick(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = true;
             if (!String.IsNullOrWhiteSpace(tbx_OrganistionName.Text) && !String.IsNullOrWhiteSpace(tbx_BankDetails.Text) && !String.IsNullOrWhiteSpace(tbx_Adress.Text))
             {
                 newOrganisationEvent?.Invoke(
@@ -64,7 +49,7 @@ namespace Theme_18_HomeWork
                     tbx_BankDetails.Text,
                     tbx_Adress.Text,
                     (bool)(cb_GoodHistory.IsChecked));
-                    this.Close();
+                this.Close();
             }
             else
                 MessageBox.Show("Имя организации,Реквизиты и адресс не могут быть пустыми!", "Обнаружено пустое поле", MessageBoxButton.OK, MessageBoxImage.Error);

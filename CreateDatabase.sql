@@ -1,13 +1,13 @@
 ﻿use MSSQLLocalDemo
 
---DROP TABLE IF EXISTS [dbo].[Accaunts]
---drop TABLE IF EXISTS [dbo].[ClientType]
---drop TABLE IF EXISTS [dbo].[Clients]
---drop TABLE IF EXISTS [dbo].[Organisations]
---drop TABLE IF EXISTS [dbo].[AccauntType]
---drop TABLE IF EXISTS [dbo].[ratesType]
---drop PROCEDURE IF EXISTS NextClientId
---drop PROCEDURE IF EXISTS NextAccauntId
+DROP TABLE IF EXISTS [dbo].[Accaunts]
+drop TABLE IF EXISTS [dbo].[ClientType]
+drop TABLE IF EXISTS [dbo].[Clients]
+drop TABLE IF EXISTS [dbo].[Organisations]
+drop TABLE IF EXISTS [dbo].[AccauntType]
+drop TABLE IF EXISTS [dbo].[ratesType]
+drop PROCEDURE IF EXISTS NextClientId
+drop PROCEDURE IF EXISTS NextAccauntId
 
 
 CREATE TABLE [dbo].[ClientType] (
@@ -21,7 +21,7 @@ CREATE TABLE [dbo].[Clients] (
     [FirstName]        NVARCHAR (25)  not NULL,
     [MidleName]        NVARCHAR (25)  NULL,
     [LastName]         NVARCHAR (25)  not NULL,
-    [ClientType]       INT            DEFAULT ((0)) NOT NULL,
+    [ClientTypeId]       INT            DEFAULT ((0)) NOT NULL,
     [FullName]         AS             ([FirstName]+' '+[MidleName]+' '+[LastName] ),
     [GoodHistory]      BIT            DEFAULT ((0)) not NULL,
     [Documents]        NVARCHAR (50)  not NULL,
@@ -31,7 +31,7 @@ CREATE TABLE [dbo].[Clients] (
 
 CREATE TABLE [dbo].[Organisations] (
     [id]               INT            NOT NULL,
-    [ClientType]       INT            DEFAULT ((1)) NOT NULL,
+    [ClientTypeId]       INT            DEFAULT ((1)) NOT NULL,
     [OrganisationName] NVARCHAR (100) not null,
     [GoodHistory]      BIT            DEFAULT ((0)) not NULL,
     [BankDetails]      NVARCHAR (100) not null,
@@ -71,11 +71,48 @@ CREATE TABLE [dbo].[Accaunts] (
     [OwnerId]        INT   NOT NULL,
     [Capitalisation] BIT   DEFAULT ((0)) NOT NULL,
     [RatesTypeid]    INT   NOT NULL,
+    CONSTRAINT [PK_Accaunts] PRIMARY KEY CLUSTERED ([id] ASC),
     CONSTRAINT [fk_ratetype_ratetype_id] FOREIGN KEY ([RatesTypeid]) REFERENCES [dbo].[ratesType] ([id]),
     CONSTRAINT [FK_Type_AccauntType_id] FOREIGN KEY ([TypeId]) REFERENCES [dbo].[AccauntType] ([id])--,
     ---CONSTRAINT [FK_OwnerID_Clients_id] FOREIGN KEY ([OwnerId]) REFERENCES [dbo].[ClientsAllTypes_id] ([id]) ON DELETE CASCADE ON UPDATE CASCADE
     );
 go
+
+
+--go
+--    create view ClientsForView
+--    as  
+--     select
+--    c.id,
+--    c.FirstName,
+--    c.MidleName,
+--    c.LastName,
+--    c.Documents,
+--    ct.[description] as 'ClientType',
+--    c.GoodHistory,
+--    isnull(ac.accs,0) as 'accs'
+--from (select 
+--        id,FirstName,MidleName,LastName,Documents,ClientTypeId,GoodHistory
+--    from [Clients] 
+----    union 
+----    select 
+----        id, OrganisationName as'FullName',ClientType,GoodHistory
+----    from Organisations
+--) as c
+--    left join[dbo].[ClientType] as ct
+--on c.ClientTypeId = ct.id
+--    left join(select OwnerId, cast (count(*) as int) as 'accs' from[dbo].Accaunts group by OwnerId ) as ac
+--    on c.id = ac.OwnerId
+-- --   order by c.id
+--go
+
+
+
+--drop view ClientsForView
+ 
+
+
+
 
 --USE productsdb;
 GO
@@ -183,14 +220,14 @@ go 5
 
 --set identity_insert [dbo].Clents off
 select 
-    id, [Name] ,ClientType,[Type],GoodHistory  
+    id, [Name] ,ClientTypeid,[Type],GoodHistory  
 from 
     (select 
-        id,FullName as N'Name',ClientType, 0 as [Type],GoodHistory 
+        id,FullName as N'Name',ClientTypeId, 0 as [Type],GoodHistory 
         from [Clients] 
     union 
     select 
-        id, OrganisationName as'Name',ClientType, 1 as [Type],GoodHistory 
+        id, OrganisationName as'Name',ClientTypeId, 1 as [Type],GoodHistory 
     from Organisations) as c
 order by id
 
@@ -216,11 +253,11 @@ select
     left join AccauntType as act on a.[TypeId] = act.id  
     left join ratesType as rt on a.[ratesTypeid] = rt.id
     left join (select 
-        id,FullName as 'FullName',ClientType
+        id,FullName as 'FullName',ClientTypeId
     from [Clients] 
     union 
     select 
-        id, OrganisationName as'FullName',ClientType
+        id, OrganisationName as'FullName',ClientTypeId
     from Organisations) as c on a.OwnerId = c.id
 
 
@@ -243,7 +280,7 @@ select
     left join AccauntType as act on a.[TypeId] = act.id  
     left join ratesType as rt on a.[ratesTypeid] = rt.id
     RIGHT JOIN (select 
-        id,FullName as 'FullName',ClientType
+        id,FullName as 'FullName',ClientTypeId
     from [Clients] 
     --union 
     --select 
@@ -276,6 +313,38 @@ select
     --from [Clients] 
     --union 
     select 
-        id, OrganisationName as'FullName',ClientType
+        id, OrganisationName as'FullName',ClientTypeId
     from Organisations
     ) as c on a.OwnerId = c.id
+
+
+    select * from dbo.Clients
+    declare @ccc int
+     exec @ccc = NextClientId
+     select @ccc
+
+
+
+
+     select
+    c.id,
+    c.FullName,
+    ct.[description] as 'ClientType',
+    c.GoodHistory,
+    isnull(ac.accs,0) as 'accs'
+from (select 
+        id,FullName as N'FullName',ClientTypeId,GoodHistory
+    from [Clients] 
+--    union 
+--    select 
+--        id, OrganisationName as'FullName',ClientType,GoodHistory
+--    from Organisations
+) as c
+    left join[dbo].[ClientType] as ct
+on c.ClientTypeId = ct.id
+    left join(select OwnerId, cast (count(*) as int) as 'accs' from[dbo].Accaunts group by OwnerId ) as ac
+    on c.id = ac.OwnerId
+    order by c.id
+
+
+ --    alter table dbo.Accaunts add    CONSTRAINT [PK_Accaunts] PRIMARY KEY CLUSTERED ([id] ASC)
