@@ -87,10 +87,11 @@
     <Compile Include="Classes\ModelDBEntity.cs" />
     <Compile Include="Classes\Model.cs" />
     <Compile Include="Classes\Presenter.cs" />
-    <Compile Include="Classes\IView.cs" />
+    <Compile Include="Classes\IViewMain.cs" />
     <Compile Include="Classes\OrganisationforView.cs" />
     <Compile Include="Classes\Support.cs" />
     <Compile Include="Classes\Converters.cs" />
+    <Compile Include="Classes\WindowsHolder.cs" />
     <Compile Include="Client.cs">
       <DependentUpon>edm.tt</DependentUpon>
     </Compile>

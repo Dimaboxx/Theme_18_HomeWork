@@ -20,6 +20,5 @@ namespace Theme_18_HomeWork
         public bool GoodHistory { get; set; }
         public string BankDetails { get; set; }
         public string Adress { get; set; }
-        public int ClientTypeid { get; set; }
     }
 }

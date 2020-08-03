@@ -12,6 +12,9 @@ namespace Theme_18_HomeWork
     {
         public MSSQLLocalDemoEntities enticontext;
         public event Action<string> newLogMessage;
+        //public event Action ClentsUpdate;
+        //public event Action OrgsUpdate;
+        //public event Action AccUpdate;
         //public ObservableCollection<AccauntForView> AccauntForViews;
         //public ObservableCollection<ClientsforView> ClientsforViews;
         //public ObservableCollection<OrganisationforView> OrganisationforViews;
@@ -164,14 +167,30 @@ namespace Theme_18_HomeWork
                 enticontext.ClientTypes,
                 o => o.ClientTypeId,
                 ct => ct.id,
-                (o, ct) => new OrganisationforView
+                (o, ct) => new 
                 {
                     id = o.id,
                     ClientType = ct.Description,
                     OrganisationName = o.OrganisationName,
                     BankDetails = o.BankDetails,
-                    Adress = o.Adress
-                });
+                    Adress = o.Adress,
+                    o.GoodHistory
+                }).GroupJoin(
+                    //enticontext.Accaunts.GroupBy(a => a.OwnerId).SelectMany(g => new { g.Key, Count = g.Count() }).DefaultIfEmpty(),
+                    enticontext.Accaunts,
+                    org => org.id,
+                    acc => acc.OwnerId,
+                    (o, ag) => new OrganisationforView
+                    {
+                        id = o.id,
+                        ClientType = o.ClientType,
+                        OrganisationName = o.OrganisationName,
+                        BankDetails = o.BankDetails,
+                        Adress = o.Adress,
+                        GoodHistory = o.GoodHistory,
+                        AccauntCounts = ag.Select(a => a.id).Count()
+
+                    });
                 return OrganisationResultQuery.ToList();
             }
         }
@@ -323,6 +342,53 @@ $"'{ cd.GoodHistory}')";
                 //enticontext.Clients.Remove(client);
             }
         }
+
+        public void DeleteOrgs(OrganisationforView client)
+        {
+
+            var q = enticontext.Accaunts.GroupBy(a => a.OwnerId).Where(e => e.Key == client.id).Select(r => r.Count());
+            q.Load();
+
+            if (q.FirstOrDefault() > 0)
+                MessageBox.Show("Не возможно удалить клиента при наличии открытых счетов");
+            else
+            {
+                Organisation od = enticontext.Organisations.Where(c => c.id == client.id).FirstOrDefault();
+                string smess = $"удален пользоваетль организация {od.id} : " +
+                   $"{od.OrganisationName}," +
+                    $"BankDetails : " +
+                   $"{od.BankDetails}," +
+                   $"Adress : " +
+                   $"{od.Adress}," +
+                   $"GoodHistory :  " +
+                   $"'{ od.GoodHistory}')";
+                enticontext.Entry(od).State = EntityState.Deleted;
+                if (enticontext.SaveChanges() > 0)
+                {
+                    OrganisationforViews.Remove(client);
+                    newLogMessage?.Invoke(smess);
+                }
+                //enticontext.Clients.Remove(client);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public void DeleteAccaunt(AccauntForView accauntForView)

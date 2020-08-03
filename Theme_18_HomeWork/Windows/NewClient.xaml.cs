@@ -8,21 +8,6 @@ namespace Theme_18_HomeWork
     /// </summary>
     public partial class NewClient : Window
     {
-        //       public SqlConnection con { get; set; }
-        //public DataTable accTypes
-        //{
-        //    get { return null; }
-        //    set
-        //    {
-        //        cbx_ClientType.DataContext = value.DefaultView;
-        //    }
-        //}
-
-
-
-
-
-
 
         public event Action<string, string, string, string, bool> newClientEvent;
         public NewClient()

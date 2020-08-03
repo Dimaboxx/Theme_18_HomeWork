@@ -164,7 +164,6 @@
           <Property Name="GoodHistory" Type="Boolean" Nullable="false" />
           <Property Name="BankDetails" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Adress" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ClientTypeid" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="ratesType">
           <Key>

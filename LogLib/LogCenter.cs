@@ -7,6 +7,7 @@ namespace LogCenterNameSpace
     {
         public ObservableCollection<LogRecord> records;
 
+        public event  Action<LogRecord>  NewMessage;
         public LogCenter()
         {
             records = new ObservableCollection<LogRecord>();
@@ -18,7 +19,9 @@ namespace LogCenterNameSpace
         /// <param name="MSg"></param>
         public void AddMessage(string MSg)
         {
-            records.Add(new LogRecord(MSg));
+            LogRecord r = new LogRecord(MSg);
+            records.Add(r);
+            NewMessage?.Invoke(r);
         }
     }
 
