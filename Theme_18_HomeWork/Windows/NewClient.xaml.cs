@@ -6,45 +6,35 @@ namespace Theme_18_HomeWork
     /// <summary>
     /// Interaction logic for NewClient.xaml
     /// </summary>
-    public partial class NewClient : Window
+    public partial class NewClient : Window, INewClientView
     {
+        NewClientPresenter presenter;
+        public string FirstName => tbx_FirstName.Text;
+
+        public string LastName => tbx_LastName.Text;
+
+        public string MidleName => tbx_MidleName.Text;
+
+        public string Documents => tbx_Documents.Text;
+
+        public bool GoodHistory => (bool)cb_GoodHistory.IsChecked;
 
         public event Action<string, string, string, string, bool> newClientEvent;
+
+
         public NewClient()
         {
-
             InitializeComponent();
+            presenter = new NewClientPresenter(this);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = true;
-            //SqlCommand c = new SqlCommand();
-            if (!String.IsNullOrWhiteSpace(tbx_FirstName.Text) && !String.IsNullOrWhiteSpace(tbx_LastName.Text) && !String.IsNullOrWhiteSpace(tbx_Documents.Text))
-            {
-                newClientEvent?.Invoke(
-                    tbx_FirstName.Text,
-                    tbx_MidleName.Text,
-                    tbx_LastName.Text,
-                    tbx_Documents.Text,
-                    (bool)(cb_GoodHistory.IsChecked));
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("FirstName и LastName не могут быть пустым!", "Обнаружено пустое поле", MessageBoxButton.OK, MessageBoxImage.Error);
-
-
-            }
-
-
+            presenter.AddClient();
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            //MainWindow.wnd_newClient = null;
-            //this.DialogResult = false;
-        }
+
 
 
 

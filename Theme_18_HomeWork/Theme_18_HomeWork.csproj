@@ -84,11 +84,17 @@
     </Compile>
     <Compile Include="Classes\AccauntForView.cs" />
     <Compile Include="Classes\ClientsforView.cs" />
+    <Compile Include="Classes\INewAccView.cs" />
+    <Compile Include="Classes\INewOrgstView.cs" />
     <Compile Include="Classes\ModelDBEntity.cs" />
-    <Compile Include="Classes\Model.cs" />
-    <Compile Include="Classes\Presenter.cs" />
-    <Compile Include="Classes\IViewMain.cs" />
+    <Compile Include="Classes\MainPresenter.cs" />
+    <Compile Include="Classes\IMainIView.cs" />
+    <Compile Include="Classes\NewOrgsPresenter - Copy.cs" />
+    <Compile Include="Classes\NewAccPresenter.cs" />
+    <Compile Include="Classes\NewClientPresenter.cs" />
+    <Compile Include="Classes\INewClientView.cs" />
     <Compile Include="Classes\OrganisationforView.cs" />
+    <Compile Include="Classes\Singleton.cs" />
     <Compile Include="Classes\Support.cs" />
     <Compile Include="Classes\Converters.cs" />
     <Compile Include="Classes\WindowsHolder.cs" />

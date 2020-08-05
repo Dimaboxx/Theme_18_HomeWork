@@ -10,6 +10,8 @@ namespace Theme_18_HomeWork
 {
     class DBEntity : IDisposable
     {
+        private static DBEntity instance;
+
         public MSSQLLocalDemoEntities enticontext;
         public event Action<string> newLogMessage;
         //public event Action ClentsUpdate;
@@ -21,7 +23,7 @@ namespace Theme_18_HomeWork
 
 
 
-        public DBEntity()
+        private DBEntity()
         {
             enticontext = new MSSQLLocalDemoEntities();
             enticontext.Accaunts.Load();
@@ -37,6 +39,19 @@ namespace Theme_18_HomeWork
 
 
 
+        }
+
+
+         public static DBEntity Instance
+        {
+            get
+        {
+              if(instance == null)
+                {
+                    instance = new DBEntity();
+                }
+                return instance;
+        }
         }
 
         public List<AccauntForView> AccauntForViews
@@ -266,11 +281,12 @@ namespace Theme_18_HomeWork
 
         }
 
-        public void AddAccaunt(DateTime OpenDate, int TypeId, float Rates, int OwnerId, bool Capitalisation, int RatesTypeid)
+        public void AddAccaunt(DateTime OpenDate, DateTime CloseDate, int TypeId, float Rates, int OwnerId, bool Capitalisation, int RatesTypeid)
         {
             Accaunt accaunt = new Accaunt
             {
                 OpenDate = OpenDate,
+                EndDate = CloseDate,
                 TypeId = TypeId,
                 Rates = Rates,
                 RatesTypeid = RatesTypeid,

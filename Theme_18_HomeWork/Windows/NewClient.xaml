@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:convert="clr-namespace:DreamConvertions"
         mc:Ignorable="d"
-        Title="NewClient" Height="240" Width="300" Closing="Window_Closing">
+        Title="NewClient" Height="240" Width="300" >
 
 
 
